@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Bot</title>
+</head>
+<body>
+    <h1>Chat Bot</h1>
+    <form id="chat-form">
+        <input type="text" id="user-message" placeholder="Mesajınızı yazın..." required>
+        <button type="submit">Gönder</button>
+    </form>
+    <div id="bot-response"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('chat-form');
+            const userMessageInput = document.getElementById('user-message');
+            const botResponseDiv = document.getElementById('bot-response');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                const userMessage = userMessageInput.value;
+                userMessageInput.value = ''; // Temizle
+
+                // Kullanıcı mesajını sunucuya gönder
+                fetch('/chat', {
+                    method: 'POST',
+                    body: new URLSearchParams({ 'user_message': userMessage }),
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    botResponseDiv.innerHTML = data.bot_response;
+                })
+                .catch(error => {
+                    console.error('Hata:', error);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
