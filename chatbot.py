@@ -1,5 +1,4 @@
 from nltk.chat.util import Chat, reflections
-from flask import Flask, render_template, request, jsonify
 
 pairs = [
     ["my name is (.*)", ["Hello %1, How are you today ?",]],
@@ -17,35 +16,32 @@ pairs = [
     ["quit", ["Bye for now. See you soon :) ","It was nice talking to you. See you soon :)"]],
     ["(.*)", ["That is nice to hear"]],
 ]
+# TODO : set çok çirkin kullanılmış, biraz daha düzenli bir hale getirilebilir
+pairs = [
+    ['(.*)yaşın kaç(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.']],
+    ['(.*)hangi mesleği yapıyorsun(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
+    ['(.*)nerelisin(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
+    ['(.*)hobilerin neler(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
+    ['(.*)en sevdiğin yemek nedir(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
+    ['(.*)hangi müziği seversin(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
+    ['(.*)en sevdiğin film hangisi(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
+    ['(.*)hangi kitabı okuyorsun(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
+    ['(.*)hangi sporu yapıyorsun(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
+    ['(.*)en sevdiğin renk nedir(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
+]
 
-app = Flask(__name__, template_folder='template')
-chatNltk = Chat(pairs, reflections)
+def load_chat_pairs(filename):
+    pairs = []
+    with open(filename, 'r', encoding='utf-8') as file:
+        for line in file:
+            parts = line.strip().split(' - ')
+            if len(parts) == 2:
+                pairs.append([parts[0], [parts[1]]])
+    return pairs
 
+chat_pairs = load_chat_pairs('chat_pairs.txt')
 
-@app.route('/')
-def index():
-    return render_template('chat.html')
+chatNltk = Chat(chat_pairs, reflections)
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    user_message = request.form['user_message']
-    print(user_message)
-
-    resp = chatNltk.respond(user_message)
-    print(resp)
-    return jsonify({'bot_response': resp})
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
-
-# def chatbot():
-#     print("Hi, I'm thecleverprogrammer and I like to chat\nPlease type lowercase English language to start a conversation. Type quit to leave ")
-#     chat = Chat(pairs, reflections)
-#     resp = chat.respond("My name is omer")
-#     print(resp)
-#     chat.converse(quit="quit")
-#
-# if __name__ == "__main__":
-#     chatbot()
+def chat(message):
+    return chatNltk.respond(message)

@@ -1,42 +1,114 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Chat Bot</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Client</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        #chat-box {
+            height: 400px;
+            width: 800px;
+            overflow-y: auto;
+        }
+
+        .message {
+            padding: 8px;
+            margin: 8px;
+            border-radius: 5px;
+        }
+
+        .incoming {
+            background-color: #9AD0C2;
+            text-align: right;
+        }
+
+        .outgoing {
+            background-color: #d9f7be;
+        }
+
+        #messageInputContainer {
+            width: 800px;
+            padding: 10px;
+            background-color: #f8f9fa;
+        }
+    </style>
 </head>
 <body>
-    <h1>Chat Bot</h1>
-    <form id="chat-form">
-        <input type="text" id="user-message" placeholder="Mesajınızı yazın..." required>
-        <button type="submit">Gönder</button>
-    </form>
-    <div id="bot-response"></div>
+<div class="container mt-5">
+    <h1>WebSocket Client</h1>
+    <div id="chat-box" class="border rounded p-3">
+        <!-- Mesajlar burada gösterilecek -->
+    </div>
+    <div id="messageInputContainer">
+        <input type="text" id="messageInput" class="form-control" placeholder="Enter a message">
+        <div class="d-flex justify-content-between">
+            <button class="btn btn-primary mt-2" onclick="sendMessage()">Send Message</button>
+            <button class="btn btn-danger mt-2" onclick="closeConnection()">Close Connection</button>
+        </div>
+    </div>
+</div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('chat-form');
-            const userMessageInput = document.getElementById('user-message');
-            const botResponseDiv = document.getElementById('bot-response');
+<script>
+    // WebSocket bağlantısı
+    const socket = new WebSocket('ws://localhost:8767');
 
-            form.addEventListener('submit', function(event) {
-                event.preventDefault();
-                const userMessage = userMessageInput.value;
-                userMessageInput.value = ''; // Temizle
+    // Bağlantı açıldığında
+    socket.addEventListener('open', (event) => {
+        console.log('WebSocket connection opened:', event);
+    });
 
-                // Kullanıcı mesajını sunucuya gönder
-                fetch('/chat', {
-                    method: 'POST',
-                    body: new URLSearchParams({ 'user_message': userMessage }),
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    botResponseDiv.innerHTML = data.bot_response;
-                })
-                .catch(error => {
-                    console.error('Hata:', error);
-                });
-            });
-        });
-    </script>
+    // Mesaj alındığında
+    socket.addEventListener('message', (event) => {
+        console.log('Message from server:', event.data);
+        displayMessage(event.data, 'incoming');
+    });
+
+    // Bağlantı kapandığında
+    socket.addEventListener('close', (event) => {
+        console.log('WebSocket connection closed:', event);
+    });
+
+    // Hata oluştuğunda
+    socket.addEventListener('error', (event) => {
+        console.error('WebSocket error:', event);
+    });
+
+    // Mesaj gönderme fonksiyonu
+    function sendMessage() {
+        const messageInput = document.getElementById('messageInput');
+        const message = messageInput.value;
+
+        // Mesajı WebSocket üzerinden gönderme
+        socket.send(message);
+
+        // Girdi alanını temizleme
+        messageInput.value = '';
+
+        // Gönderilen mesajı kendi mesaj kutucuğumuza ekleme
+        displayMessage(message, 'outgoing');
+    }
+
+    // Mesajları ekrana yazdırma
+    function displayMessage(message, type) {
+        const chatBox = document.getElementById('chat-box');
+        const messageDiv = document.createElement('div');
+        messageDiv.innerText = message;
+        messageDiv.classList.add('message', type);
+        chatBox.appendChild(messageDiv);
+
+        // Otomatik olarak en altta görünen mesajı seçme
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    // Bağlantıyı kapatma fonksiyonu
+    function closeConnection() {
+        socket.close();
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0.8/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
