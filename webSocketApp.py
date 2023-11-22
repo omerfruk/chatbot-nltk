@@ -1,6 +1,9 @@
 import asyncio
 import websockets
 from chatbot import chat
+import os
+import signal
+import sys
 
 async def handle_connection(websocket, path):
     # Yeni bir bağlantı kurulduğunda bu fonksiyon çalışacak
@@ -17,10 +20,19 @@ async def handle_connection(websocket, path):
 
 
 # WebSocket sunucusunu başlatma
-start_server = websockets.serve(handle_connection, "localhost", 8767)
+start_server = websockets.serve(handle_connection, "localhost", 8766)
+
+def my_signal_handler(*args):
+    if os.environ.get('RUN_MAIN') == 'true':
+        print('stopped'.upper())
+    print('exiting'.upper())
+    sys.exit(0)
+
+
 
 if __name__ == "__main__":
     print("Bismillah")
-    # Asenkron etkinlik döngüsünü başlatma
+
+    signal.signal(signal.SIGINT, my_signal_handler)
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()

@@ -17,7 +17,7 @@ pairs = [
     ["(.*)", ["That is nice to hear"]],
 ]
 # TODO : set çok çirkin kullanılmış, biraz daha düzenli bir hale getirilebilir
-pairs = [
+pairs2 = [
     ['(.*)yaşın kaç(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.']],
     ['(.*)hangi mesleği yapıyorsun(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
     ['(.*)nerelisin(.*)', ["20'li yaşların ortasındayım.", '30 yaşındayım.', 'Genç bir chatbotum, yaşımı söylemeyeyim.', 'Ben bir chatbotum, mesleğim bu!', 'Yazılım mühendisiyim.', 'Öğrenciyim.', 'Dijital dünyadanım!', "İstanbul'da yaşıyorum.", 'Ankaralıyım.', 'Kitap okumayı severim.', 'Müzik dinlemek en büyük hobim.', 'Spor yapmayı seviyorum.', 'Pizza her zaman favorim.', 'Makarna benim için vazgeçilmez.', 'Tatlılar benim zayıf noktam.', 'Rock müziği seviyorum.', 'Klasik müzik rahatlatıcı.', 'Pop müzik her zaman iyi gider.', 'Bilim kurgu filmleri ilgimi çeker.', 'Komedi filmleri en iyisi.', 'Dram filmleri beni etkiler.', 'Şu anda bir bilim kurgu okuyorum.', 'Klasik bir roman üzerindeyim.', 'Bilim kitaplarına bayılıyorum.', 'Yüzme yapmayı severim.', 'Futbol oynamak hoşuma gider.', 'Yoga yaparım.', 'Mavi her zaman favorim.', 'Yeşil huzur verici.', 'Kırmızı enerji dolu bir renk.']],
@@ -41,7 +41,7 @@ def load_chat_pairs(filename):
 
 chat_pairs = load_chat_pairs('chat_pairs.txt')
 
-chatNltk = Chat(chat_pairs, reflections)
+chatNltk = Chat(pairs, reflections)
 
 def chat(message):
     return chatNltk.respond(message)

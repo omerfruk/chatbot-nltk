@@ -20,10 +20,11 @@
 
         .incoming {
             background-color: #9AD0C2;
-            text-align: right;
         }
 
         .outgoing {
+            display: flex;
+            justify-content: end;
             background-color: #d9f7be;
         }
 
@@ -51,7 +52,7 @@
 
 <script>
     // WebSocket bağlantısı
-    const socket = new WebSocket('ws://localhost:8767');
+    const socket = new WebSocket('ws://localhost:8766');
 
     // Bağlantı açıldığında
     socket.addEventListener('open', (event) => {
@@ -78,6 +79,10 @@
     function sendMessage() {
         const messageInput = document.getElementById('messageInput');
         const message = messageInput.value;
+
+        if (message === '') {
+            return alert("Lütfen bir mesaj giriniz.")
+        }
 
         // Mesajı WebSocket üzerinden gönderme
         socket.send(message);
