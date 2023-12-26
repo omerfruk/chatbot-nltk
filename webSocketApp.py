@@ -4,6 +4,7 @@ from chatbot import chat
 import os
 import signal
 import sys
+import webbrowser
 
 async def handle_connection(websocket, path):
     # Yeni bir bağlantı kurulduğunda bu fonksiyon çalışacak
@@ -32,7 +33,13 @@ def my_signal_handler(*args):
 
 if __name__ == "__main__":
     print("Bismillah")
+    mevcut_dizin = os.getcwd()
+    html_dosya_adi = "template/chat.html"
+    html_dosya_yolu = os.path.join(mevcut_dizin, html_dosya_adi)
+    webbrowser.open('file://' + html_dosya_yolu, new=2)
 
     signal.signal(signal.SIGINT, my_signal_handler)
     asyncio.get_event_loop().run_until_complete(start_server)
     asyncio.get_event_loop().run_forever()
+
+
